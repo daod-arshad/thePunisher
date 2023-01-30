@@ -10,4 +10,4 @@ Install the following dependencies before running the files:
 9.  sslscan
 
 Syntax:
-python thePunisher.py <hostname>
+python thepunisher.py <hostname>
