@@ -1,34 +1,22 @@
-name: List AWS IAM Users
+name: List AWS IAM Users (Secure OIDC)
 
 on:
-  workflow_dispatch:  # Run manually
-  push:
-    branches: [ main ]
+  workflow_dispatch:  # run manually
 
 jobs:
   list-users:
     runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
+    permissions:
+      id-token: write   # needed for OIDC
+      contents: read
 
-      - name: Configure AWS credentials
+    steps:
+      - name: Configure AWS credentials via OIDC
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          role-to-assume: arn:aws:iam::156041430350:role/GithubRole
+          aws-region: us-east-1
 
-      - name: Verify AWS identity
-        run: aws sts get-caller-identity
-
-      - name: List IAM Users
+      - name: List IAM users
         run: aws iam list-users --output table
-      - name: Debug environment
-        run: |
-          echo "AWS region: $AWS_REGION"
-          echo "AWS access key ID starts with: $AWS_ACCESS_KEY_ID"
-          echo "AWS access secret ID starts with: $AWS_SECRET_ACCESS_KEY"
-          echo ${{secrets.AWS_ACCESS_KEY_ID}} | sed 's/./& /g'
-          echo ${{secrets.AWS_SECRET_ACCESS_KEY}} | sed 's/./& /g'
