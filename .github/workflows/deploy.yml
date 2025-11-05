@@ -25,3 +25,8 @@ jobs:
 
       - name: List IAM Users
         run: aws iam list-users --output table
+      - name: Debug environment
+        run: |
+          echo "AWS region: $AWS_REGION"
+          echo "AWS access key ID starts with: $AWS_ACCESS_KEY_ID"
+          echo "AWS access secret ID starts with: $AWS_SECRET_ACCESS_KEY"
